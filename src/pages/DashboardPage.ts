@@ -33,7 +33,7 @@ export class DashboardPage extends BasePage {
 
   async sortBy(option: 'az' | 'za' | 'lohi' | 'hilo'): Promise<void> {
     await this.sortDropdown.selectOption(option);
-    await this.page.waitForTimeout(200);
+    await this.page.waitForTimeout(300); // extra settle for CI
   }
 
   async getItemNames(): Promise<string[]>    { return this.itemNames.allInnerTexts(); }
