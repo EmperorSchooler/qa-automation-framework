@@ -46,3 +46,11 @@ test.describe('Login — Authentication Flows', () => {
     await expect(page).toHaveURL('/');
   });
 });
+
+// Additional edge case added post-review
+test('dismissing error banner clears it', { tag: ['@regression'] }, async () => {
+  await loginPage.login('bad_user', TestData.passwords.invalid);
+  expect(await loginPage.isErrorVisible()).toBe(true);
+  await loginPage.dismissError();
+  expect(await loginPage.isErrorVisible()).toBe(false);
+});
