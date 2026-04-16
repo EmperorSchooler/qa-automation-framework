@@ -42,3 +42,15 @@ test.describe('Auth API — Login & Registration', () => {
     expect(res.status()).toBe(200);
   });
 });
+
+  test('login without email returns 400', { tag: ['@regression'] }, async () => {
+    const res = await api.post('/api/login', { password: TestData.api.validLogin.password });
+    expect(res.status()).toBe(400);
+  });
+
+  test('register without password returns 400 with error', { tag: ['@regression'] }, async () => {
+    const res = await api.post('/api/register', { email: TestData.api.validLogin.email });
+    expect(res.status()).toBe(400);
+    expect((await res.json()).error).toBe('Missing password');
+  });
+});
