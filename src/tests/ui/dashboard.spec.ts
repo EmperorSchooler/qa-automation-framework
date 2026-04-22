@@ -51,3 +51,10 @@ test.describe('Dashboard — Inventory & Cart', () => {
     for (let i = 1; i < prices.length; i++) expect(prices[i]).toBeLessThanOrEqual(prices[i-1]);
   });
 });
+
+  test('adding two items increments badge to 2', { tag: ['@regression'] }, async () => {
+    await dashboard.addItemToCartByIndex(0);
+    await dashboard.addItemToCartByIndex(1);
+    expect(await dashboard.getCartBadgeCount()).toBe('2');
+  });
+});
