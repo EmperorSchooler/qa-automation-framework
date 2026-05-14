@@ -15,15 +15,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '18', cache: 'npm' }
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test --grep @smoke --project=chromium
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run smoke tests
+        run: npx playwright test --grep @smoke --project=chromium
         env:
-          BASE_URL: ${{ vars.BASE_URL || 'https://www.saucedemo.com' }}
-      - if: always()
+          BASE_URL:     ${{ vars.BASE_URL || 'https://www.saucedemo.com' }}
+          API_BASE_URL: https://reqres.in
+      - name: Upload smoke report
+        if: always()
         uses: actions/upload-artifact@v4
-        with: { name: smoke-report, path: playwright-report/, retention-days: 7 }
+        with:
+          name: smoke-report
+          path: playwright-report/
+          retention-days: 7
 
   regression:
     name: Regression — ${{ matrix.browser }}
@@ -36,15 +46,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '18', cache: 'npm' }
-      - run: npm ci
-      - run: npx playwright install --with-deps ${{ matrix.browser }}
-      - run: npx playwright test --grep @regression --project=${{ matrix.browser }}
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Run regression tests
+        run: npx playwright test --grep @regression --project=${{ matrix.browser }}
         env:
           BASE_URL: ${{ vars.BASE_URL || 'https://www.saucedemo.com' }}
-      - if: always()
+      - name: Upload regression report
+        if: always()
         uses: actions/upload-artifact@v4
-        with: { name: regression-${{ matrix.browser }}, path: playwright-report/, retention-days: 14 }
+        with:
+          name: regression-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 14
 
   api:
     name: API Tests
@@ -53,11 +72,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '18', cache: 'npm' }
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test --project=api
-        env: { API_BASE_URL: https://reqres.in }
-      - if: always()
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run API tests
+        run: npx playwright test --project=api
+        env:
+          API_BASE_URL: https://reqres.in
+      - name: Upload API report
+        if: always()
         uses: actions/upload-artifact@v4
-        with: { name: api-report, path: playwright-report/, retention-days: 7 }
+        with:
+          name: api-report
+          path: playwright-report/
+          retention-days: 7
+
+  summary:
+    name: Test Summary
+    needs: [smoke, regression, api]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Write summary
+        run: |
+          echo "## Playwright Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite      | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke      | ${{ needs.smoke.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Regression | ${{ needs.regression.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API        | ${{ needs.api.result }} |" >> $GITHUB_STEP_SUMMARY
