@@ -154,3 +154,9 @@ Built by **Demitre Schooler** — Senior QA Automation Engineer with 6+ years de
 - Email: demitrejob@gmail.com
 - LinkedIn: [linkedin.com/in/demitre-schooler-477427342](https://linkedin.com/in/demitre-schooler-477427342)
 - Location: New York, USA | US Citizen | Open to Remote
+
+## Roadmap
+- [ ] Add visual regression testing with Playwright screenshots
+- [ ] Expand API test coverage for edge cases
+- [ ] Integrate Allure reporting for richer test results
+- [ ] Add performance benchmarking for critical user flows
