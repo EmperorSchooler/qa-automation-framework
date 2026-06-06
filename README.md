@@ -1,6 +1,5 @@
 # QA Automation Framework
 
-![Playwright Tests](https://github.com/EmperorSchooler/qa-automation-framework/actions/workflows/playwright.yml/badge.svg)
 
 > **End-to-end test automation framework built with Playwright, TypeScript, and REST API testing.**  
 > Designed for enterprise-grade regression coverage with full CI/CD integration via GitHub Actions.
