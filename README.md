@@ -159,3 +159,5 @@ Built by **Demitre Schooler** — Senior QA Automation Engineer with 6+ years de
 - [ ] Expand API test coverage for edge cases
 - [ ] Integrate Allure reporting for richer test results
 - [ ] Add performance benchmarking for critical user flows
+- [ ] Add cross-browser accessibility testing with axe-core
+- [ ] Add Allure report integration for CI/CD pipeline visibility
